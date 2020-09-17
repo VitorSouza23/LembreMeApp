@@ -1,0 +1,13 @@
+<mat-list>
+    <div *ngIf='title' mat-subheader>{{ title }}</div>
+    <mat-list-item class="list-with-actions" *ngFor='let task of tasks'>
+        <div>
+            {{ task.description }}
+        </div>
+        <div *ngIf='buttons.length > 0'>
+            <button mat-icon-button *ngFor='let button of buttons' [title]="button.title" (click)='button.onClick($event)'>
+                <mat-icon matListIcon>{{ button.iconName }}</mat-icon>
+            </button>
+        </div>
+    </mat-list-item>
+</mat-list>
