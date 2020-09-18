@@ -1,6 +1,6 @@
 <mat-list>
     <div *ngIf='title' mat-subheader>{{ title }}</div>
-    <mat-list-item class="list-with-actions" *ngFor='let task of tasks'>
+    <mat-list-item class="list-with-actions" *ngFor='let task of tasks | async'>
         <div>
             {{ task.description }}
         </div>

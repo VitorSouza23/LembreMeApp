@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CompletedComponent } from './completed/completed.component';
+import { TasksService } from './services/tasks.service';
 
 
 @NgModule({
@@ -25,6 +26,9 @@ import { CompletedComponent } from './completed/completed.component';
     MatDividerModule,
     MatButtonModule,
     MatIconModule
+  ],
+  providers: [
+    TasksService
   ]
 })
 export class TasksModule { }

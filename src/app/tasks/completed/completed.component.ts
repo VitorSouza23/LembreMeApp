@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import IIconButton from '../common/models/icon-button-model';
 import ITask from '../models/task.model';
+import { TasksService } from '../services/tasks.service';
 
 @Component({
   selector: 'app-completed',
@@ -9,10 +11,10 @@ import ITask from '../models/task.model';
 })
 export class CompletedComponent implements OnInit {
 
-  public tasks: ITask[];
+  public completedTasks: Observable<ITask[]>;
   public buttonsActions: IIconButton [];
 
-  constructor() {
+  constructor(private tasksService: TasksService) {
     this.buttonsActions = [
       { title: 'Restaurar', iconName: 'settings_backup_restore', onClick: e => console.log('ta fumegano') },
       { title: 'Excluir', iconName: 'delete_outline', onClick: e => console.log('ta fumegano') },
@@ -20,11 +22,7 @@ export class CompletedComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.tasks = [
-      { description: "Teste 5", completed: true },
-      { description: "Teste 6", completed: true },
-      { description: "Teste 4", completed: true }
-    ]
+    this.completedTasks = this.tasksService.getCompletedTasks();
   }
 
 }
