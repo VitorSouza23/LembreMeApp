@@ -13,10 +13,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CompletedComponent } from './completed/completed.component';
 import { TasksService } from './services/tasks.service';
+import { TaskFormComponent } from './task-form/task-form.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { TaskDialogService } from './services/task-dialog.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 @NgModule({
-  declarations: [TasksListComponent, PendingComponent, ListViewComponent, CompletedComponent],
+  declarations: [TasksListComponent, PendingComponent, ListViewComponent, CompletedComponent, TaskFormComponent],
   imports: [
     CommonModule,
     TasksRoutingModule,
@@ -26,10 +33,16 @@ import { TasksService } from './services/tasks.service';
     MatDividerModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule,
+    MatSlideToggleModule
   ],
   providers: [
-    TasksService
+    TasksService,
+    TaskDialogService
   ]
 })
 export class TasksModule { }

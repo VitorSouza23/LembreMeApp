@@ -14,6 +14,8 @@ export class TasksService {
   public taskChangeStatus$ = this.taskChangeStatus.asObservable();
   private taskDeleted = new Subject<Task>();
   public taskDeleted$ = this.taskDeleted.asObservable();
+  private newTaksAdded = new Subject<Task>();
+  public newTaskAdded$ = this.newTaksAdded.asObservable();
 
   constructor() {
     this.fakeTasks = [
@@ -114,5 +116,14 @@ export class TasksService {
       return true;
     }
     return false;
+  }
+
+  addTask(task: Task): Task {
+    let lastTask = this.fakeTasks[this.fakeTasks.length -1];
+    let newId = lastTask?.id ?? 1;
+    task.id = newId;
+    this.fakeTasks.push(task);
+    this.newTaksAdded.next(task);
+    return task;
   }
 }

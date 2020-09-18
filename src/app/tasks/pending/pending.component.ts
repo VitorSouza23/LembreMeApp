@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
+import { TaskDialogService } from '../services/task-dialog.service';
 import { TasksService } from '../services/tasks.service';
 
 @Component({
@@ -17,10 +18,14 @@ export class PendingComponent implements OnInit {
   public pendingTasks: Observable<Task[]>;
   public buttonsActions: IIconButton[];
 
-  constructor(private tasksService: TasksService, private snackBar: MatSnackBar) {
+  constructor(
+    private tasksService: TasksService, 
+    private snackBar: MatSnackBar, 
+    private taskDialogService: TaskDialogService) {
     this.createButtons();
     this.subscribeOnTasksChanges();
     this.subscribeOnTaksDeleted();
+    this.subscribeOnTaskAdded();
   }
 
   ngOnInit(): void {
@@ -65,6 +70,20 @@ export class PendingComponent implements OnInit {
     });
   }
 
+  private subscribeOnTaskAdded(): void {
+    this.tasksService.newTaskAdded$.subscribe(task => {
+      if(task.deadline) {
+        this.pendingTasksWithDeadline.subscribe(tasks => {
+          tasks.push(task);
+        });
+      } else {
+        this.pendingTasks.subscribe(tasks => {
+          tasks.push(task);
+        });
+      }
+    });
+  }
+
   private spliceTask(tasks: Task[], task: Task){
     let index = tasks.indexOf(task);
     tasks.splice(index, 1);
@@ -83,6 +102,14 @@ export class PendingComponent implements OnInit {
   openSnackBar(message: string, action: string = 'OK') {
     this.snackBar.open(message, action, {
       duration: 2000,
+    });
+  }
+
+  newTask() : void {
+    let task = new Task(0, '', false);
+    this.taskDialogService.openDialog(task, result => {
+      this.tasksService.addTask(result);
+      this.openSnackBar(`A tarefa ${result.description} foi adicionada.`);
     });
   }
 

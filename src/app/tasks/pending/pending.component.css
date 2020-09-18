@@ -1,0 +1,7 @@
+.new-taks-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.new-taks-container button {
+  margin: 10px;
+}

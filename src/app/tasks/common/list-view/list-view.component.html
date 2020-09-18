@@ -3,7 +3,7 @@
     <mat-list-item class="list-with-actions" *ngFor='let task of tasks'>
         <div class="taks-content">
             {{ task.description }}
-            <span class="taks-details" matLine *ngIf='task.deadline'> {{ task.formattedDeadline() }} </span>
+            <span class="taks-details" matLine *ngIf='task.deadline'><b>{{ task.formattedDeadline() }}</b></span>
             <span class="taks-details" matLine *ngIf='task.location'> {{ task.formattedLocation() }} </span>
         </div>
         <div *ngIf='buttons.length > 0'>

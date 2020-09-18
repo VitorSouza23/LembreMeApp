@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>Tarefa</h1>
+<div mat-dialog-content>
+  <div class="task-description-container">
+    <mat-form-field>
+      <mat-label>Descrição</mat-label>
+      <input matInput #description [(ngModel)]="task.description" maxlength="200">
+      <mat-hint align="end">{{description.value?.length || 0}}/200</mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="task-deadline-container">
+    <mat-slide-toggle color='primary' [(ngModel)]='enableDeadline' (change)='onEnableDeadline()'>Com Prazo</mat-slide-toggle>
+    <mat-form-field *ngIf='enableDeadline'>
+      <mat-label>Prazo</mat-label>
+      <input matInput [ngModel]="task.deadline | date:'yyyy-MM-ddThh:mm'" (ngModelChange)="onDeadlineChange($event)" type="datetime-local">
+    </mat-form-field>
+  </div>
+  <div class="task-location-container">
+    <mat-slide-toggle color='primary' [(ngModel)]='enableLocation' (change)='onEnableLoationChange()'>Com Local</mat-slide-toggle>
+    <div class="location-details" *ngIf='enableLocation'>
+      <mat-form-field >
+        <mat-label>Rua</mat-label>
+        <input matInput [(ngModel)]="task.location.street">
+      </mat-form-field>
+      <mat-form-field >
+        <mat-label>Número</mat-label>
+        <input matInput [(ngModel)]="task.location.number" type='number' min="0">
+      </mat-form-field>
+      <mat-form-field >
+        <mat-label>Bairro</mat-label>
+        <input matInput [(ngModel)]="task.location.neighborhood">
+      </mat-form-field>
+      <mat-form-field >
+        <mat-label>Cidade</mat-label>
+        <input matInput [(ngModel)]="task.location.city">
+      </mat-form-field>
+      <mat-form-field >
+        <mat-label>UF</mat-label>
+        <input matInput [(ngModel)]="task.location.federativeUnit">
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="task" cdkFocusInitial>Ok</button>
+</div>

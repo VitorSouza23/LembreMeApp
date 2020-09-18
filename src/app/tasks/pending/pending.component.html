@@ -1,3 +1,8 @@
+<div class="new-taks-container">
+    <button mat-mini-fab color="primary" (click)='newTask()'>
+        <mat-icon matListIcon>add</mat-icon>
+    </button>
+</div>
 <div *ngIf='pendingTasksWithDeadline | async as pendings; else noTasksDeadline'>
     <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
         title="Próximas"></app-list-view>
