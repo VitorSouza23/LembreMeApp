@@ -1,3 +1,15 @@
-<app-list-view [tasks]='pendingTasksWithDeadline' [buttons]='buttonsActions' title="Próximas"></app-list-view>
+<div *ngIf='pendingTasksWithDeadline | async as pendings; else noTasksDeadline'>
+    <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
+        title="Próximas"></app-list-view>
+</div>
 <mat-divider></mat-divider>
-<app-list-view [tasks]='pendingTasks' [buttons]='buttonsActions' title="Sem Prazo"></app-list-view>
+<div *ngIf='pendingTasks | async as pendings; else noTasks'>
+    <app-list-view *ngIf='pendings.length > 0; else noTasks' [tasks]='pendings' [buttons]='buttonsActions'
+        title="Sem Prazo"></app-list-view>
+</div>
+<ng-template #noTasksDeadline>
+   <mat-card>Não há tarefas pendentes</mat-card> 
+</ng-template>
+<ng-template #noTasks>
+    <mat-card>Não há tarefas sem prazo pendentes</mat-card>
+</ng-template>

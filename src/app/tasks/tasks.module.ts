@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TasksRoutingModule } from './tasks-routing.module';
 import { TasksListComponent } from './tasks-list/tasks-list.component';
 import { PendingComponent } from './pending/pending.component';
@@ -25,7 +25,8 @@ import { TasksService } from './services/tasks.service';
     MatListModule,
     MatDividerModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   providers: [
     TasksService

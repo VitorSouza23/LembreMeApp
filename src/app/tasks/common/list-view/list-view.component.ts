@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
-import ITask from '../../models/task.model';
+import Task from '../../models/task.model';
 import IIconButton from '../models/icon-button-model';
 
 @Component({
@@ -11,7 +11,7 @@ import IIconButton from '../models/icon-button-model';
 })
 export class ListViewComponent implements OnInit {
 
-  @Input() tasks: Observable<ITask[]>;
+  @Input() tasks: Task[];
   @Input() title: string;
   @Input() buttons: IIconButton[];
 

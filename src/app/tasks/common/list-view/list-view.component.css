@@ -1,3 +1,7 @@
 .list-with-actions .mat-list-item-content {
   justify-content: space-between;
 }
+.taks-content .taks-details {
+  font-size: 0.85em;
+  color: #707b77;
+}
