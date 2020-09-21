@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogOption, IDialogResult } from '../common/models/dialog-reuslt.models';
 import Task from '../models/task.model';
@@ -10,6 +11,7 @@ import Task from '../models/task.model';
 })
 export class TaskFormComponent implements OnInit {
 
+  public form: FormGroup;
   public enableDeadline: boolean;
   public enableLocation: boolean;
 
@@ -17,6 +19,9 @@ export class TaskFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public task: Task) { }
 
   ngOnInit(): void {
+    this.form = new FormGroup({
+      taksDescription: new FormControl()
+    });
     this.enableDeadline = this.task.deadline != null;
     this.enableLocation = this.task.location != null;
   }
@@ -26,7 +31,16 @@ export class TaskFormComponent implements OnInit {
   }
 
   onConfirm(): void {
-    this.dialogRef.close({task: this.task , dialogOption: DialogOption.Confirm})
+    if(this.form.valid){
+      this.dialogRef.close({task: this.task , dialogOption: DialogOption.Confirm});
+    } else {
+      Object.keys(this.form.controls).forEach(field => {
+        const control = this.form.get(field);
+        if(control instanceof FormControl) {
+          control.markAllAsTouched();
+        }
+      });
+    }
   }
 
   onEnableLoationChange(){

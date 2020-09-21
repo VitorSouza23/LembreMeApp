@@ -15,6 +15,14 @@ class Task {
         this.location = location;
     }
 
+    clone(): Task {
+        let clone = Object.create(this);
+        if(this.location){
+            (clone as Task).location = Object.create(this.location);
+        }
+        return clone;
+    }
+
     formattedDeadline(): string {
         return this.deadline?.toLocaleDateString("pt-BR", {year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute:'numeric', second:'numeric'});
     }

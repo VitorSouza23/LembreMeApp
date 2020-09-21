@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Tarefa</h1>
-<div mat-dialog-content>
+<div mat-dialog-content >
   <div class="task-description-container">
-    <mat-form-field>
+    <mat-form-field [formGroup]='form'>
       <mat-label>Descrição</mat-label>
-      <input matInput #description [(ngModel)]="task.description" maxlength="200">
+      <input matInput #description [(ngModel)]="task.description" maxlength="200" formControlName='taksDescription' required>
       <mat-hint align="end">{{description.value?.length || 0}}/200</mat-hint>
     </mat-form-field>
   </div>

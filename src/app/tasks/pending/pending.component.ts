@@ -134,7 +134,7 @@ export class PendingComponent implements OnInit {
   }
 
   editTask(task: Task): void {
-    this.taskDialogService.openDialog(task, result => {
+    this.taskDialogService.openDialog(task.clone(), result => {
       if(result.dialogOption === DialogOption.Confirm){
         this.tasksService.updateTask(result.task);
         this.openSnackBar(`A tarefa ${result.task.description} foi alterada.`);
