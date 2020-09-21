@@ -119,8 +119,11 @@ export class TasksService {
   }
 
   addTask(task: Task): Task {
-    let lastTask = this.fakeTasks[this.fakeTasks.length -1];
-    let newId = lastTask?.id ?? 1;
+    let lastTask = this.fakeTasks.sort(t => t.id)[this.fakeTasks.length -1];
+    let newId = 1;
+    if(lastTask){
+      newId = lastTask.id + 1;
+    }
     task.id = newId;
     this.fakeTasks.push(task);
     this.newTaksAdded.next(task);
