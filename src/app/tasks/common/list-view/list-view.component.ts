@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import Task from '../../models/task.model';
 import IIconButton from '../models/icon-button-model';
 
@@ -15,11 +14,17 @@ export class ListViewComponent implements OnInit {
   @Input() title: string;
   @Input() buttons: IIconButton[];
 
+  @Output() onEdit = new EventEmitter<Task>();
+
   constructor() {
     this.buttons = this.buttons ?? [];
   }
 
   ngOnInit(): void {
+  }
+
+  editTaks(task: Task): void {
+    this.onEdit.emit(task);
   }
 
 }

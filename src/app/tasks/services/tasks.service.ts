@@ -16,6 +16,8 @@ export class TasksService {
   public taskDeleted$ = this.taskDeleted.asObservable();
   private newTaksAdded = new Subject<Task>();
   public newTaskAdded$ = this.newTaksAdded.asObservable();
+  private updateTaskData = new Subject<[Task, Task]>();
+  public updateTaskData$ = this.updateTaskData.asObservable();
 
   constructor() {
     this.fakeTasks = [
@@ -128,5 +130,13 @@ export class TasksService {
     this.fakeTasks.push(task);
     this.newTaksAdded.next(task);
     return task;
+  }
+
+  updateTask(task: Task) : [Task, Task] {
+    let oldTask = this.fakeTasks.find(t => t.id == task.id);
+    let index = this.fakeTasks.indexOf(oldTask);
+    this.fakeTasks[index] = task;
+    this.updateTaskData.next([oldTask, task]);
+    return [oldTask, task];
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { async } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
+import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
 import { TaskDialogService } from '../services/task-dialog.service';
@@ -26,6 +27,7 @@ export class PendingComponent implements OnInit {
     this.subscribeOnTasksChanges();
     this.subscribeOnTaksDeleted();
     this.subscribeOnTaskAdded();
+    this.subscribeOnTaskUpdateData();
   }
 
   ngOnInit(): void {
@@ -84,6 +86,22 @@ export class PendingComponent implements OnInit {
     });
   }
 
+  private subscribeOnTaskUpdateData(): void {
+    this.tasksService.updateTaskData$.subscribe(([oldTask, newTask]) => {
+      if(oldTask.deadline){
+        this.pendingTasksWithDeadline.subscribe(tasks => this.spliceTask(tasks, oldTask));
+      } else {
+        this.pendingTasks.subscribe(tasks => this.spliceTask(tasks, oldTask));
+      }
+
+      if(newTask.deadline){
+        this.pendingTasksWithDeadline.subscribe(tasks => tasks.push(newTask));
+      } else {
+        this.pendingTasks.subscribe(tasks => tasks.push(newTask));
+      }
+    })
+  }
+
   private spliceTask(tasks: Task[], task: Task){
     let index = tasks.indexOf(task);
     tasks.splice(index, 1);
@@ -108,9 +126,19 @@ export class PendingComponent implements OnInit {
   newTask() : void {
     let task = new Task(0, '', false);
     this.taskDialogService.openDialog(task, result => {
-      this.tasksService.addTask(result);
-      this.openSnackBar(`A tarefa ${result.description} foi adicionada.`);
+      if(result.dialogOption === DialogOption.Confirm){
+        this.tasksService.addTask(result.task);
+        this.openSnackBar(`A tarefa ${result.task.description} foi adicionada.`);
+      }
     });
   }
 
+  editTask(task: Task): void {
+    this.taskDialogService.openDialog(task, result => {
+      if(result.dialogOption === DialogOption.Confirm){
+        this.tasksService.updateTask(result.task);
+        this.openSnackBar(`A tarefa ${result.task.description} foi alterada.`);
+      }
+    })
+  }
 }

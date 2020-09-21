@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogOption, IDialogResult } from '../common/models/dialog-reuslt.models';
 import Task from '../models/task.model';
 
 @Component({
@@ -12,7 +13,7 @@ export class TaskFormComponent implements OnInit {
   public enableDeadline: boolean;
   public enableLocation: boolean;
 
-  constructor(public dialogRef: MatDialogRef<TaskFormComponent>,
+  constructor(public dialogRef: MatDialogRef<TaskFormComponent, IDialogResult>,
     @Inject(MAT_DIALOG_DATA) public task: Task) { }
 
   ngOnInit(): void {
@@ -21,7 +22,11 @@ export class TaskFormComponent implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close({task: undefined, dialogOption: DialogOption.Cancel});
+  }
+
+  onConfirm(): void {
+    this.dialogRef.close({task: this.task , dialogOption: DialogOption.Confirm})
   }
 
   onEnableLoationChange(){

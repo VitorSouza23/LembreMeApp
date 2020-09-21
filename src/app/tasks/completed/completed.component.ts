@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
+import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
+import { TaskDialogService } from '../services/task-dialog.service';
 import { TasksService } from '../services/tasks.service';
 
 @Component({
@@ -15,10 +17,12 @@ export class CompletedComponent implements OnInit {
   public completedTasks: Observable<Task[]>;
   public buttonsActions: IIconButton[];
 
-  constructor(private tasksService: TasksService, private snackBar: MatSnackBar) {
+  constructor(private tasksService: TasksService, private snackBar: MatSnackBar,
+    private taskDialogService: TaskDialogService) {
     this.createButtons();
     this.subscribeOnTasksChanges();
     this.subscribeOnTaskDeleted();
+    this.subscribeOnTaskUpdateData();
   }
 
   ngOnInit(): void {
@@ -50,6 +54,15 @@ export class CompletedComponent implements OnInit {
     });
   }
 
+  private subscribeOnTaskUpdateData(): void {
+    this.tasksService.updateTaskData$.subscribe(([oldTask, newTask]) => {
+      this.completedTasks.subscribe(tasks => {
+        let index = tasks.indexOf(oldTask);
+        tasks[index] = newTask;
+      })
+    });
+  }
+
   private spliceTask(tasks: Task[], task: Task){
     let index = tasks.indexOf(task);
     tasks.splice(index, 1);
@@ -69,6 +82,15 @@ export class CompletedComponent implements OnInit {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  editTask(task: Task): void {
+    this.taskDialogService.openDialog(task, result => {
+      if(result.dialogOption === DialogOption.Confirm){
+        this.tasksService.updateTask(result.task);
+        this.openSnackBar(`A tarefa ${result.task.description} foi alterada.`);
+      }
+    })
   }
 
 }

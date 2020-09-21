@@ -1,6 +1,6 @@
 <mat-list>
     <div *ngIf='title' mat-subheader>{{ title }}</div>
-    <mat-list-item class="list-with-actions" *ngFor='let task of tasks'>
+    <mat-list-item class="list-with-actions" *ngFor='let task of tasks' (click)='editTaks(task)'>
         <div class="taks-content">
             {{ task.description }}
             <span class="taks-details" matLine *ngIf='task.deadline'><b>{{ task.formattedDeadline() }}</b></span>

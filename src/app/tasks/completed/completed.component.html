@@ -1,5 +1,6 @@
 <div *ngIf='completedTasks | async as completeds; else noTasks'>
-    <app-list-view *ngIf='completeds.length > 0; else noTasks'  [tasks]='completeds' [buttons]='buttonsActions'></app-list-view>
+    <app-list-view *ngIf='completeds.length > 0; else noTasks'  [tasks]='completeds' 
+        [buttons]='buttonsActions' (onEdit)='editTask($event)'></app-list-view>
 </div>
 <ng-template #noTasks>
    <mat-card>Não há tarefas completadas</mat-card> 

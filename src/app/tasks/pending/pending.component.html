@@ -5,7 +5,7 @@
 </div>
 <div *ngIf='pendingTasksWithDeadline | async as pendings; else noTasksDeadline'>
     <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
-        title="Próximas"></app-list-view>
+        title="Próximas" (onEdit)='editTask($event)'></app-list-view>
 </div>
 <mat-divider></mat-divider>
 <div *ngIf='pendingTasks | async as pendings; else noTasks'>
