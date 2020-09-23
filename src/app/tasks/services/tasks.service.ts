@@ -35,8 +35,7 @@ export class TasksService {
     this.http.get<ITask[]>(`${this.API}?onlyNotCompleted=true`)
       .subscribe(data => {
         let tasks = data.map(t => TaskBuilder.createTask(t));
-        console.log(tasks)
-
+    
         let pendingTasksWithDeadline = tasks.filter(t => (t.deadline != null));
         this.getPendingTasksWithDeadline.next(pendingTasksWithDeadline);
 
