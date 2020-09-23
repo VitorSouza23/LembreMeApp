@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
 import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
@@ -14,7 +13,7 @@ import { TasksService } from '../services/tasks.service';
 })
 export class CompletedComponent implements OnInit {
 
-  public completedTasks: Observable<Task[]>;
+  public completedTasks: Task[];
   public buttonsActions: IIconButton[];
 
   constructor(private tasksService: TasksService, private snackBar: MatSnackBar,
@@ -23,10 +22,11 @@ export class CompletedComponent implements OnInit {
     this.subscribeOnTasksChanges();
     this.subscribeOnTaskDeleted();
     this.subscribeOnTaskUpdateData();
+    this.subscribeOnGetCompletedTasks();
   }
 
   ngOnInit(): void {
-    this.completedTasks = this.tasksService.getCompletedTasks();
+    this.tasksService.getCompletedTasks();
   }
 
   private createButtons(): void {
@@ -39,9 +39,9 @@ export class CompletedComponent implements OnInit {
   private subscribeOnTasksChanges(): void {
     this.tasksService.taskChangeStatus$.subscribe(task => {
       if (task.completed) {
-        this.completedTasks.subscribe(tasks => tasks.push(task));
+        this.completedTasks.push(task);
       } else {
-        this.completedTasks.subscribe(tasks => this.spliceTask(tasks, task))
+        this.spliceTask(this.completedTasks, task);
       }
     });
   }
@@ -49,32 +49,39 @@ export class CompletedComponent implements OnInit {
   private subscribeOnTaskDeleted(): void {
     this.tasksService.taskDeleted$.subscribe(task => {
       if (task.completed) {
-        this.completedTasks.subscribe(tasks => this.spliceTask(tasks, task));
+        this.spliceTask(this.completedTasks, task);
       }
     });
   }
 
   private subscribeOnTaskUpdateData(): void {
-    this.tasksService.updateTaskData$.subscribe(([oldTask, newTask]) => {
-      this.completedTasks.subscribe(tasks => {
-        let index = tasks.indexOf(oldTask);
-        tasks[index] = newTask;
-      })
+    this.tasksService.updateTaskData$.subscribe(updatedTask => {
+      let taskInArray = this.completedTasks.find(t => t.id === updatedTask.id);
+      if (taskInArray) {
+        let index = this.completedTasks.indexOf(taskInArray);
+        this.completedTasks[index] = updatedTask;
+      }
     });
   }
 
-  private spliceTask(tasks: Task[], task: Task){
+  private subscribeOnGetCompletedTasks(): void {
+    this.tasksService.getCompletedTasksSubject$.subscribe(tasks => {
+      this.completedTasks = tasks;
+    });
+  }
+
+  private spliceTask(tasks: Task[], task: Task) {
     let index = tasks.indexOf(task);
     tasks.splice(index, 1);
   }
 
   uncompleteTaks(task: Task): void {
-    this.tasksService.uncompleteTask(task.id);
+    this.tasksService.uncompleteTask(task);
     this.openSnackBar(`Tarefa ${task.description} restaurada.`);
   }
 
   deleteTask(task: Task): void {
-    this.tasksService.deleteTask(task.id);
+    this.tasksService.deleteTask(task);
     this.openSnackBar(`Tarefa ${task.description} excluída.`);
   }
 
@@ -86,7 +93,7 @@ export class CompletedComponent implements OnInit {
 
   editTask(task: Task): void {
     this.taskDialogService.openDialog(task.clone(), result => {
-      if(result.dialogOption === DialogOption.Confirm){
+      if (result.dialogOption === DialogOption.Confirm) {
         this.tasksService.updateTask(result.task);
         this.openSnackBar(`A tarefa ${result.task.description} foi alterada.`);
       }

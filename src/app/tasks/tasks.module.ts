@@ -21,6 +21,7 @@ import { TaskDialogService } from './services/task-dialog.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     MatInputModule,
     MatSlideToggleModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     TasksService,

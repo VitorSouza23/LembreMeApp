@@ -1,12 +1,12 @@
 <mat-list>
     <div *ngIf='title' mat-subheader>{{ title }}</div>
-    <mat-list-item class="list-with-actions" *ngFor='let task of tasks' (click)='editTaks(task)'>
-        <div class="taks-content">
-            {{ task.description }}
+    <mat-list-item class="list-with-actions" *ngFor='let task of tasks'>
+        <div class="taks-content" (click)='editTaks(task)'>
+            <span>{{ task.description }}</span>
             <span class="taks-details" matLine *ngIf='task.deadline'><b>{{ task.formattedDeadline() }}</b></span>
             <span class="taks-details" matLine *ngIf='task.location'> {{ task.formattedLocation() }} </span>
         </div>
-        <div *ngIf='buttons.length > 0'>
+        <div class="task-buttons" *ngIf='buttons.length > 0'>
             <button mat-icon-button *ngFor='let button of buttons' [title]="button.title" [value]='task'
                 (click)='button.onClick(task)'>
                 <mat-icon matListIcon>{{ button.iconName }}</mat-icon>

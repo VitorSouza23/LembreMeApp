@@ -1,6 +1,14 @@
 import ILocation from './location.model';
 
-class Task {
+export interface ITask{
+    id: number;
+    description: string;
+    completed: boolean;
+    deadline?: Date;
+    location?: ILocation;
+}
+
+class Task implements ITask {
     public id: number;
     public description: string;
     public completed: boolean;

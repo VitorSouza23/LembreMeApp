@@ -1,4 +1,4 @@
-<div *ngIf='completedTasks | async as completeds; else noTasks'>
+<div *ngIf='completedTasks as completeds; else noTasks'>
     <app-list-view *ngIf='completeds.length > 0; else noTasks'  [tasks]='completeds' 
         [buttons]='buttonsActions' (onEdit)='editTask($event)'></app-list-view>
 </div>

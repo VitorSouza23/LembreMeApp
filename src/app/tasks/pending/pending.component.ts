@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { async } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
 import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
@@ -15,8 +13,8 @@ import { TasksService } from '../services/tasks.service';
 })
 export class PendingComponent implements OnInit {
 
-  public pendingTasksWithDeadline: Observable<Task[]>;
-  public pendingTasks: Observable<Task[]>;
+  public pendingTasksWithDeadline: Task[];
+  public pendingTasks: Task[];
   public buttonsActions: IIconButton[];
 
   constructor(
@@ -28,11 +26,11 @@ export class PendingComponent implements OnInit {
     this.subscribeOnTaksDeleted();
     this.subscribeOnTaskAdded();
     this.subscribeOnTaskUpdateData();
+    this.subscribeOnGetPendingsTasks();
   }
 
   ngOnInit(): void {
-    this.pendingTasks = this.tasksService.getPendingTasks(false);
-    this.pendingTasksWithDeadline = this.tasksService.getPendingTasks();
+    this.tasksService.getPendingTasks();
   }
 
   private createButtons(): void {
@@ -46,15 +44,15 @@ export class PendingComponent implements OnInit {
     this.tasksService.taskChangeStatus$.subscribe(task => {
       if (task.completed === false) {
         if (task.deadline) {
-          this.pendingTasksWithDeadline.subscribe(tasks => tasks.push(task));
+          this.pendingTasksWithDeadline.push(task);
         } else {
-          this.pendingTasks.subscribe(tasks => tasks.push(task));
+          this.pendingTasks.push(task);
         }
       } else {
         if (task.deadline) {
-          this.pendingTasksWithDeadline.subscribe(tasks => this.spliceTask(tasks, task));
+          this.spliceTask(this.pendingTasksWithDeadline, task);
         } else {
-          this.pendingTasks.subscribe(tasks => this.spliceTask(tasks, task));
+          this.spliceTask(this.pendingTasks, task);
         }
       }
     });
@@ -64,9 +62,9 @@ export class PendingComponent implements OnInit {
     this.tasksService.taskDeleted$.subscribe(task => {
       if (task.completed === false) {
         if (task.deadline) {
-          this.pendingTasksWithDeadline.subscribe(tasks => this.spliceTask(tasks, task));
+          this.spliceTask(this.pendingTasksWithDeadline, task);
         } else {
-          this.pendingTasks.subscribe(tasks => this.spliceTask(tasks, task));
+          this.spliceTask(this.pendingTasks, task);
         }
       }
     });
@@ -75,45 +73,46 @@ export class PendingComponent implements OnInit {
   private subscribeOnTaskAdded(): void {
     this.tasksService.newTaskAdded$.subscribe(task => {
       if(task.deadline) {
-        this.pendingTasksWithDeadline.subscribe(tasks => {
-          tasks.push(task);
-        });
+        this.pendingTasksWithDeadline.push(task);
       } else {
-        this.pendingTasks.subscribe(tasks => {
-          tasks.push(task);
-        });
+        this.pendingTasks.push(task);
       }
     });
   }
 
   private subscribeOnTaskUpdateData(): void {
-    this.tasksService.updateTaskData$.subscribe(([oldTask, newTask]) => {
-      if(oldTask.deadline){
-        this.pendingTasksWithDeadline.subscribe(tasks => this.spliceTask(tasks, oldTask));
-      } else {
-        this.pendingTasks.subscribe(tasks => this.spliceTask(tasks, oldTask));
-      }
+    this.tasksService.updateTaskData$.subscribe(updatedTask => {
+      this.spliceTask(this.pendingTasksWithDeadline, updatedTask);
+      this.spliceTask(this.pendingTasks, updatedTask);
 
-      if(newTask.deadline){
-        this.pendingTasksWithDeadline.subscribe(tasks => tasks.push(newTask));
+      if(updatedTask.deadline){
+        this.pendingTasksWithDeadline.push(updatedTask);
       } else {
-        this.pendingTasks.subscribe(tasks => tasks.push(newTask));
+        this.pendingTasks.push(updatedTask);
       }
     })
   }
 
+  private subscribeOnGetPendingsTasks(): void {
+    this.tasksService.getPendingTasksSubject$.subscribe(tasks => this.pendingTasks = tasks);
+    this.tasksService.getPendingTasksWithDeadline$.subscribe(tasks => this.pendingTasksWithDeadline = tasks);
+  }
+
   private spliceTask(tasks: Task[], task: Task){
-    let index = tasks.indexOf(task);
-    tasks.splice(index, 1);
+    let taskInArray = tasks.find(t => t.id === task.id);
+    if(taskInArray) {
+      let index = tasks.indexOf(taskInArray);
+      tasks.splice(index, 1);
+    }
   }
 
   completeTask(task: Task): void {
-    this.tasksService.completeTask(task.id);
+    this.tasksService.completeTask(task);
     this.openSnackBar(`Tarefa ${task.description} completada.`);
   }
 
   deleteTaks(task: Task): void {
-    this.tasksService.deleteTask(task.id);
+    this.tasksService.deleteTask(task);
     this.openSnackBar(`Tarefa ${task.description} excluída.`);
   }
 

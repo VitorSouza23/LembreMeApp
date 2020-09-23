@@ -3,14 +3,14 @@
         <mat-icon matListIcon>add</mat-icon>
     </button>
 </div>
-<div *ngIf='pendingTasksWithDeadline | async as pendings; else noTasksDeadline'>
+<div *ngIf='pendingTasksWithDeadline as pendings; else noTasksDeadline'>
     <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
         title="Próximas" (onEdit)='editTask($event)'></app-list-view>
 </div>
 <mat-divider></mat-divider>
-<div *ngIf='pendingTasks | async as pendings; else noTasks'>
+<div *ngIf='pendingTasks as pendings; else noTasks'>
     <app-list-view *ngIf='pendings.length > 0; else noTasks' [tasks]='pendings' [buttons]='buttonsActions'
-        title="Sem Prazo"></app-list-view>
+        title="Sem Prazo" (onEdit)='editTask($event)'></app-list-view>
 </div>
 <ng-template #noTasksDeadline>
    <mat-card>Não há tarefas pendentes</mat-card> 
