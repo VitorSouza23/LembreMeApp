@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
 import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
@@ -17,6 +18,8 @@ export class PendingComponent implements OnInit {
   public pendingTasks: Task[];
   public buttonsActions: IIconButton[];
 
+  public loading$ = new Subject<boolean>();
+
   constructor(
     private tasksService: TasksService, 
     private snackBar: MatSnackBar, 
@@ -31,6 +34,7 @@ export class PendingComponent implements OnInit {
 
   ngOnInit(): void {
     this.tasksService.getPendingTasks();
+    this.loading$.next(true);
   }
 
   private createButtons(): void {
@@ -94,8 +98,14 @@ export class PendingComponent implements OnInit {
   }
 
   private subscribeOnGetPendingsTasks(): void {
-    this.tasksService.getPendingTasksSubject$.subscribe(tasks => this.pendingTasks = tasks);
-    this.tasksService.getPendingTasksWithDeadline$.subscribe(tasks => this.pendingTasksWithDeadline = tasks);
+    this.tasksService.getPendingTasksSubject$.subscribe(tasks => {
+      this.pendingTasks = tasks;
+      this.loading$.next(false);
+    });
+    this.tasksService.getPendingTasksWithDeadline$.subscribe(tasks => {
+      this.pendingTasksWithDeadline = tasks;
+      this.loading$.next(false);
+    });
   }
 
   private spliceTask(tasks: Task[], task: Task){

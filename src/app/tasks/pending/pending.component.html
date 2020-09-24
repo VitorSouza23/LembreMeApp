@@ -1,20 +1,27 @@
-<div class="new-taks-container">
-    <button mat-mini-fab color="primary" (click)='newTask()'>
-        <mat-icon matListIcon>add</mat-icon>
-    </button>
+<div *ngIf="(loading$ | async) === false; else spinner">
+    <div class="new-taks-container">
+        <button mat-mini-fab color="primary" (click)='newTask()'>
+            <mat-icon matListIcon>add</mat-icon>
+        </button>
+    </div>
+    <div *ngIf='pendingTasksWithDeadline as pendings; else noTasksDeadline'>
+        <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
+            title="Próximas" (onEdit)='editTask($event)'></app-list-view>
+    </div>
+    <mat-divider></mat-divider>
+    <div *ngIf='pendingTasks as pendings; else noTasks'>
+        <app-list-view *ngIf='pendings.length > 0; else noTasks' [tasks]='pendings' [buttons]='buttonsActions'
+            title="Sem Prazo" (onEdit)='editTask($event)'></app-list-view>
+    </div>
+    <ng-template #noTasksDeadline>
+       <mat-card>Não há tarefas pendentes</mat-card> 
+    </ng-template>
+    <ng-template #noTasks>
+        <mat-card>Não há tarefas sem prazo pendentes</mat-card>
+    </ng-template>
 </div>
-<div *ngIf='pendingTasksWithDeadline as pendings; else noTasksDeadline'>
-    <app-list-view *ngIf='pendings.length > 0; else noTasksDeadline' [tasks]='pendings' [buttons]='buttonsActions'
-        title="Próximas" (onEdit)='editTask($event)'></app-list-view>
-</div>
-<mat-divider></mat-divider>
-<div *ngIf='pendingTasks as pendings; else noTasks'>
-    <app-list-view *ngIf='pendings.length > 0; else noTasks' [tasks]='pendings' [buttons]='buttonsActions'
-        title="Sem Prazo" (onEdit)='editTask($event)'></app-list-view>
-</div>
-<ng-template #noTasksDeadline>
-   <mat-card>Não há tarefas pendentes</mat-card> 
-</ng-template>
-<ng-template #noTasks>
-    <mat-card>Não há tarefas sem prazo pendentes</mat-card>
+<ng-template #spinner>
+    <div class="task-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
 </ng-template>
