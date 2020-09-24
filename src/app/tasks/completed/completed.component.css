@@ -1,0 +1,7 @@
+.task-spinner {
+  overflow: hidden;
+  margin: 20px;
+}
+.task-spinner .mat-spinner {
+  margin: 0 auto;
+}

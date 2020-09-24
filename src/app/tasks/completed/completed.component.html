@@ -1,7 +1,15 @@
-<div *ngIf='completedTasks as completeds; else noTasks'>
-    <app-list-view *ngIf='completeds.length > 0; else noTasks'  [tasks]='completeds' 
-        [buttons]='buttonsActions' (onEdit)='editTask($event)'></app-list-view>
+<div *ngIf="(loading$ | async) === false; else spinner">
+    <div *ngIf='completedTasks as completeds; else noTasks'>
+        <app-list-view *ngIf='completeds.length > 0; else noTasks'  [tasks]='completeds' 
+            [buttons]='buttonsActions' (onEdit)='editTask($event)'></app-list-view>
+    </div>
+    <ng-template #noTasks>
+       <mat-card>Não há tarefas completadas</mat-card> 
+    </ng-template>
 </div>
-<ng-template #noTasks>
-   <mat-card>Não há tarefas completadas</mat-card> 
+<ng-template #spinner>
+    <div class="task-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
 </ng-template>
+

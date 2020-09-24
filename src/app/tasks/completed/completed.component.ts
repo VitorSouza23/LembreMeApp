@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
 import { DialogOption } from '../common/models/dialog-reuslt.models';
 import IIconButton from '../common/models/icon-button-model';
 import Task from '../models/task.model';
@@ -16,6 +17,8 @@ export class CompletedComponent implements OnInit {
   public completedTasks: Task[];
   public buttonsActions: IIconButton[];
 
+  public loading$ = new Subject<boolean>();
+
   constructor(private tasksService: TasksService, private snackBar: MatSnackBar,
     private taskDialogService: TaskDialogService) {
     this.createButtons();
@@ -27,6 +30,7 @@ export class CompletedComponent implements OnInit {
 
   ngOnInit(): void {
     this.tasksService.getCompletedTasks();
+    this.loading$.next(true);
   }
 
   private createButtons(): void {
@@ -67,6 +71,7 @@ export class CompletedComponent implements OnInit {
   private subscribeOnGetCompletedTasks(): void {
     this.tasksService.getCompletedTasksSubject$.subscribe(tasks => {
       this.completedTasks = tasks;
+      this.loading$.next(false);
     });
   }
 
